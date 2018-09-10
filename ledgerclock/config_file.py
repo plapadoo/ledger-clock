@@ -10,7 +10,6 @@ class ConfigFile(NamedTuple):
 
 def read_config_file() -> Optional[ConfigFile]:
     config_path = Path(xdg_config_home) / "ledgerclock" / "config.json"
-    print(config_path)
     if not config_path.exists():
         return None
     with config_path.open() as f:
