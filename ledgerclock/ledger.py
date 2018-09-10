@@ -1,6 +1,6 @@
 from pathlib import Path
 from datetime import date, timedelta
-from typing import List, NamedTuple
+from typing import List, NamedTuple, Iterable
 from fuzzyfinder import fuzzyfinder
 
 
@@ -30,15 +30,20 @@ def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
         fuzzyfinder(needle, [acc.content for acc in accounts])))
 
 
-def add_entry(filename: Path, entry: LedgerEntry) -> None:
+def add_entry(filename: Path, entries: Iterable[LedgerEntry]) -> None:
+    accounts = get_accounts(filename)
     with filename.open('a') as f:
-        f.write('\n')
-        f.write('{} {}  ; {}\n'.format(entry.date.isoformat(), entry.payee,
-                                       entry.comment))
-        f.write('\t{}  {:2f}h  ; :{}:\n'.format(
-            entry.account,
-            entry.hours.total_seconds() / 3600, entry.user))
-        f.write('\t{}\n'.format(entry.account))  #TODO
+        for entry in entries:
+            f.write('\n')
+            f.write('{} {}  ; {}\n'.format(entry.date.isoformat(), entry.payee,
+                                           entry.comment))
+            f.write('\t{}  {:.2f}h  ; :{}:\n'.format(
+                entry.account,
+                entry.hours.total_seconds() / 3600, entry.user))
+            quota = entry.account.replace('usage', 'quota')
+            while not quota in accounts and ':' in quota:
+                quota = quota[:quota.rfind(':')]
+            f.write('\t{}\n'.format(quota))
 
 
 def add_account(filename: Path, name: str) -> None:
