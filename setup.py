@@ -18,6 +18,6 @@ setup(
     author_email='info@plapadoo.de',
     license='BSD3',
     packages=find_packages(),
-    install_requires=[],
+    install_requires=['pyxdg'],
     include_package_data=True,
     zip_safe=True)

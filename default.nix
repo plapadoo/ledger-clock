@@ -20,6 +20,7 @@ in
     # So nix-shell contains the Python path
     # shellHook = "export PYTHONPATH=$(pwd):$PYTHONPATH";
     propagatedBuildInputs = [
+      pythonPkgs.pyxdg
     ];
     # checkPhase = ''
     #   PYLINTHOME="/tmp" pylint ledger_jira_sync
@@ -28,6 +29,7 @@ in
 
     buildInputs = [
       pkgs.python3
+      pythonPkgs.ipython
       pythonPkgs.pylint
       pythonPkgs.mypy
       pythonPkgs.yapf
