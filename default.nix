@@ -11,6 +11,18 @@ let
 
   pkgs = import src { };
 
+  packageOverrides = self: super: {
+    fuzzyfinder = super.buildPythonPackage rec {
+      version = "2.1.0";
+
+      src = self.fetchPypi {
+        pname  = "fuzzyfinder";
+        sha256 = "1m0gx9182w1dybkyjwwjyd6i87x2dzv252ks2fj8yn6avlcp5z4r";
+        inherit version;
+      };
+    };
+  };
+
   pythonPkgs = pkgs.python3Packages;
 in
   pythonPkgs.buildPythonApplication rec {
