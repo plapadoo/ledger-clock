@@ -27,3 +27,7 @@ def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
 
 def add_entry(filename: Path, entry: LedgerEntry) -> None:
     pass
+
+
+def add_account(filename: Path, name: str) -> None:
+    pass
