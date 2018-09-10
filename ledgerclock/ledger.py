@@ -4,12 +4,8 @@ from typing import List, NamedTuple, Iterable
 from fuzzyfinder import fuzzyfinder  # type: ignore
 
 
-class Account(NamedTuple):
-    content: str
-
-
 class LedgerEntry(NamedTuple):
-    account: Account
+    account: str
     tag: str
     date: date  # type: ignore
     hours: timedelta
@@ -27,36 +23,35 @@ def get_granularity(filename: Path) -> timedelta:
         return timedelta(minutes=granularity)
 
 
-def get_accounts(filename: Path) -> List[Account]:
+def get_accounts(filename: Path) -> List[str]:
     with filename.open() as f:
         account_lines = (line for line in f
                          if line.upper().startswith('ACCOUNT '))
-        return [Account(line[8:].rstrip()) for line in account_lines]
+        return [line[8:].rstrip() for line in account_lines]
 
 
-def fuzzy_search(accounts: List[Account], needle: str) -> Iterable[Account]:
-    return (Account(result) for result in list(
-        fuzzyfinder(needle, [acc.content for acc in accounts])))
+def fuzzy_search(accounts: List[str], needle: str) -> Iterable[str]:
+    return (result for result in list(fuzzyfinder(needle, accounts)))
 
 
 def add_entries(filename: Path, entries: List[LedgerEntry]) -> None:
     accounts = get_accounts(filename)
     accounts_to_add = [
-        entry.account.content for entry in entries
-        if not entry.account in accounts
+        entry.account for entry in entries if not entry.account in accounts
     ]
     if accounts_to_add:
         add_accounts(filename, accounts_to_add)
+    accounts = get_accounts(filename)
     with filename.open('a') as f:
         for entry in entries:
             f.write('\n')
             f.write('{} {}  ; {}\n'.format(entry.date.isoformat(), entry.payee,
                                            entry.comment))
             f.write('\t{}  {:.2f}h  ; :{}:\n'.format(
-                entry.account.content,
+                entry.account,
                 entry.hours.total_seconds() / 3600, entry.tag))
-            quota = entry.account.content.replace('usage', 'quota')
-            while not Account(quota) in accounts and ':' in quota:
+            quota = entry.account.replace('usage', 'quota')
+            while not quota in accounts and ':' in quota:
                 quota = quota[:quota.rfind(':')]
             f.write('\t{}\n'.format(quota))
 
