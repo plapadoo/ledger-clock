@@ -40,10 +40,11 @@ def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
         fuzzyfinder(needle, [acc.content for acc in accounts])))
 
 
-def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
+def add_entries(filename: Path, entries: List[LedgerEntry]) -> None:
     accounts = get_accounts(filename)
     accounts_to_add = [
-        entry.account for entry in entries if not entry.account in accounts
+        entry.account.content for entry in entries
+        if not entry.account in accounts
     ]
     add_accounts(filename, accounts_to_add)
     with filename.open('a') as f:
@@ -52,9 +53,9 @@ def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
             f.write('{} {}  ; {}\n'.format(entry.date.isoformat(), entry.payee,
                                            entry.comment))
             f.write('\t{}  {:.2f}h  ; :{}:\n'.format(
-                entry.account,
+                entry.account.content,
                 entry.hours.total_seconds() / 3600, entry.tag))
-            quota = entry.account.replace('usage', 'quota')
+            quota = entry.account.content.replace('usage', 'quota')
             while not quota in accounts and ':' in quota:
                 quota = quota[:quota.rfind(':')]
             f.write('\t{}\n'.format(quota))

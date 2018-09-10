@@ -131,6 +131,6 @@ def to_ledger_entry(e: BufferEntry) -> LedgerEntry:
 def commit_clocks() -> None:
     bf = read_buffer_file()
     for key, els in groupby(bf.entries, key=compare_entries):
-        add_entries(key[0], (to_ledger_entry(e) for e in els))
+        add_entries(key[0], [to_ledger_entry(e) for e in els])
     bf.entries.clear()
     write_buffer_file(bf)
