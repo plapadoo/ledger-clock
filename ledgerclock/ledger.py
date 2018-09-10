@@ -63,9 +63,11 @@ def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
 def add_accounts(filename: Path, names: Iterable[str]) -> None:
     with filename.open('r+') as f:
         lines = f.readlines()
-        indexes = (idx for (idx, l) in enumerate(lines)
-                   if l.upper().startswith('ACCOUNT '))
-        index = max(indexes)
+        indices = [
+            idx for (idx, l) in enumerate(lines)
+            if l.upper().startswith('ACCOUNT ')
+        ]
+        index = max(indices if indices else [len(lines) - 1])
         for (offset, name) in enumerate(names):
             lines.insert(index + offset + 1, 'account {}\n'.format(
                 name.replace('usage', 'quota')))
