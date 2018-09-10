@@ -1,7 +1,7 @@
 from pathlib import Path
 from datetime import date, timedelta
 from typing import List, NamedTuple, Iterable
-from fuzzyfinder import fuzzyfinder
+from fuzzyfinder import fuzzyfinder  # type: ignore
 
 
 class Account(NamedTuple):
@@ -11,7 +11,7 @@ class Account(NamedTuple):
 class LedgerEntry(NamedTuple):
     account: Account
     tag: str
-    date: date
+    date: date  # type: ignore
     hours: timedelta
     comment: str
     payee: str
@@ -23,8 +23,7 @@ def get_granularity(filename: Path) -> timedelta:
             line for line in f
             if line.upper().startswith('; #PRAGMA GRANULARITY=')
         ]
-        granularity = int(
-            granu_lines[0].split('=')[-1]) if len(granu_lines) > 0 else 15
+        granularity = int(granu_lines[0].split('=')[-1]) if granu_lines else 15
         return timedelta(minutes=granularity)
 
 
@@ -35,7 +34,7 @@ def get_accounts(filename: Path) -> List[Account]:
         return [Account(line[8:]) for line in account_lines]
 
 
-def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
+def fuzzy_search(accounts: List[Account], needle: str) -> Iterable[Account]:
     return (Account(result) for result in list(
         fuzzyfinder(needle, [acc.content for acc in accounts])))
 

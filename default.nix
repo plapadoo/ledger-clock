@@ -33,7 +33,7 @@ in
     version = "1.0";
     src = ./.;
     # So nix-shell contains the Python path
-    # shellHook = "export PYTHONPATH=$(pwd):$PYTHONPATH";
+    #shellHook = "export PYTHONPATH=$(pwd):$PYTHONPATH";
     propagatedBuildInputs = [
       pythonPkgs.pyxdg
       pythonPkgs.fuzzyfinder

@@ -3,7 +3,7 @@ from pathlib import Path
 from itertools import groupby
 import json
 from datetime import datetime
-from xdg.BaseDirectory import save_data_path
+from xdg.BaseDirectory import save_data_path  # type: ignore
 from ledgerclock.timeutils import iso_str_to_datetime
 from ledgerclock.buffer_entry import BufferEntry
 from ledgerclock.ledger import add_entries, LedgerEntry, Account

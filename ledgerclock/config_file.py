@@ -1,7 +1,7 @@
 from typing import NamedTuple, List, Any, Dict
 from pathlib import Path
 import json
-from xdg.BaseDirectory import xdg_config_home
+from xdg.BaseDirectory import xdg_config_home  # type: ignore
 
 
 class ConfigFile(NamedTuple):
