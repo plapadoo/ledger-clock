@@ -1,16 +1,19 @@
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any, Tuple
 from pathlib import Path
+from itertools import groupby
 import json
-from xdg.BaseDirectory import xdg_data_home, save_data_path
 from datetime import datetime
+from xdg.BaseDirectory import save_data_path
 from ledgerclock.timeutils import iso_str_to_datetime
 from ledgerclock.buffer_entry import BufferEntry
+from ledgerclock.ledger import add_entries, LedgerEntry, Account
+from ledgerclock.config_file import read_config_file
 
 
 class BufferFile:
     def __init__(
             self,
-            open_entry: BufferEntry,
+            open_entry: Optional[BufferEntry],
             entries: List[BufferEntry],
     ) -> None:
         self.open_entry = open_entry
@@ -108,5 +111,24 @@ def stop_clock() -> None:
     write_buffer_file(f)
 
 
+def compare_entries(e: BufferEntry) -> Tuple[Path, str, str, str]:
+    return (e.filename, e.account, e.comment, e.payee)
+
+
+def to_ledger_entry(e: BufferEntry) -> LedgerEntry:
+    if e.end is None:
+        raise Exception('cannot ledgerify entry with no end time')
+    return LedgerEntry(
+        account=Account(e.account),
+        tag=read_config_file().tag,
+        date=e.start.date(),
+        hours=e.end - e.start,
+        comment=e.comment,
+        payee=e.payee,
+    )
+
+
 def commit_clocks() -> None:
-    pass
+    bf = read_buffer_file()
+    for key, els in groupby(bf.entries, key=compare_entries):
+        add_entries(key[0], (to_ledger_entry(e) for e in els))
