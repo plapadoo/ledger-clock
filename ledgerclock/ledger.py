@@ -30,7 +30,7 @@ def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
         fuzzyfinder(needle, [acc.content for acc in accounts])))
 
 
-def add_entry(filename: Path, entries: Iterable[LedgerEntry]) -> None:
+def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
     accounts = get_accounts(filename)
     with filename.open('a') as f:
         for entry in entries:
@@ -46,5 +46,13 @@ def add_entry(filename: Path, entries: Iterable[LedgerEntry]) -> None:
             f.write('\t{}\n'.format(quota))
 
 
-def add_account(filename: Path, name: str) -> None:
-    pass
+def add_accounts(filename: Path, names: Iterable[str]) -> None:
+    with filename.open('r+') as f:
+        lines = f.readlines()
+        indexes = (idx for (idx, l) in enumerate(lines)
+                   if l.upper().startswith('ACCOUNT '))
+        index = max(indexes)
+        for (offset, name) in enumerate(names):
+            lines.insert(index + offset + 1, 'account {}\n'.format(name))
+        f.seek(0)
+        f.write("".join(lines))
