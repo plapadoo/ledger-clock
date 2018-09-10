@@ -38,6 +38,12 @@ in
       pythonPkgs.pyxdg
       pythonPkgs.fuzzyfinder
     ];
+    checkPhase = ''
+      PYLINTHOME="/tmp" pylint ledgerclock
+      mypy ledgerclock
+    '';
+    checkInputs = [ pythonPkgs.pylint pythonPkgs.mypy ];
+
     # checkPhase = ''
     #   PYLINTHOME="/tmp" pylint ledger_jira_sync
     # '';
