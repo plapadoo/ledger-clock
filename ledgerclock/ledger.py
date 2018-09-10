@@ -15,7 +15,6 @@ class LedgerEntry(NamedTuple):
     hours: timedelta
     comment: str
     payee: str
-    user: str
 
 
 def get_granularity(filename: Path) -> timedelta:
@@ -43,6 +42,10 @@ def fuzzy_search(accounts: List[Account], needle: str) -> List[Account]:
 
 def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
     accounts = get_accounts(filename)
+    accounts_to_add = [
+        entry.account for entry in entries if not entry.account in accounts
+    ]
+    add_accounts(filename, accounts_to_add)
     with filename.open('a') as f:
         for entry in entries:
             f.write('\n')
@@ -50,7 +53,7 @@ def add_entries(filename: Path, entries: Iterable[LedgerEntry]) -> None:
                                            entry.comment))
             f.write('\t{}  {:.2f}h  ; :{}:\n'.format(
                 entry.account,
-                entry.hours.total_seconds() / 3600, entry.user))
+                entry.hours.total_seconds() / 3600, entry.tag))
             quota = entry.account.replace('usage', 'quota')
             while not quota in accounts and ':' in quota:
                 quota = quota[:quota.rfind(':')]
@@ -64,6 +67,8 @@ def add_accounts(filename: Path, names: Iterable[str]) -> None:
                    if l.upper().startswith('ACCOUNT '))
         index = max(indexes)
         for (offset, name) in enumerate(names):
+            lines.insert(index + offset + 1, 'account {}\n'.format(
+                name.replace('usage', 'quota')))
             lines.insert(index + offset + 1, 'account {}\n'.format(name))
         f.seek(0)
         f.write("".join(lines))
