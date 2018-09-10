@@ -31,7 +31,7 @@ def get_accounts(filename: Path) -> List[Account]:
     with filename.open() as f:
         account_lines = (line for line in f
                          if line.upper().startswith('ACCOUNT '))
-        return [Account(line[8:]) for line in account_lines]
+        return [Account(line[8:].rstrip()) for line in account_lines]
 
 
 def fuzzy_search(accounts: List[Account], needle: str) -> Iterable[Account]:
@@ -45,7 +45,8 @@ def add_entries(filename: Path, entries: List[LedgerEntry]) -> None:
         entry.account.content for entry in entries
         if not entry.account in accounts
     ]
-    add_accounts(filename, accounts_to_add)
+    if accounts_to_add:
+        add_accounts(filename, accounts_to_add)
     with filename.open('a') as f:
         for entry in entries:
             f.write('\n')
