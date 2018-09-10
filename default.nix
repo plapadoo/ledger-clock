@@ -29,6 +29,7 @@ in
     buildInputs = [
       pkgs.python3
       pythonPkgs.pylint
+      pythonPkgs.mypy
       pythonPkgs.yapf
     ];
 }
