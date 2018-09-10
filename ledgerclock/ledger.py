@@ -56,7 +56,7 @@ def add_entries(filename: Path, entries: List[LedgerEntry]) -> None:
                 entry.account.content,
                 entry.hours.total_seconds() / 3600, entry.tag))
             quota = entry.account.content.replace('usage', 'quota')
-            while not quota in accounts and ':' in quota:
+            while not Account(quota) in accounts and ':' in quota:
                 quota = quota[:quota.rfind(':')]
             f.write('\t{}\n'.format(quota))
 
