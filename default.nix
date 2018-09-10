@@ -13,17 +13,20 @@ let
 
   packageOverrides = self: super: {
     fuzzyfinder = super.buildPythonPackage rec {
+      pname  = "fuzzyfinder";
       version = "2.1.0";
 
       src = self.fetchPypi {
-        pname  = "fuzzyfinder";
-        sha256 = "1m0gx9182w1dybkyjwwjyd6i87x2dzv252ks2fj8yn6avlcp5z4r";
-        inherit version;
+        sha256 = "0jzh68qr9nwgp9zchbzqq0qhihinf27m3iwhcsnyqsw623qqcvf5";
+        inherit pname version;
       };
+
+      checkInputs = [ super.pytest ];
     };
   };
 
-  pythonPkgs = pkgs.python3Packages;
+  python = pkgs.python3.override { inherit packageOverrides; };
+  pythonPkgs = python.pkgs;
 in
   pythonPkgs.buildPythonApplication rec {
     name = "ledger-clock";
@@ -33,6 +36,7 @@ in
     # shellHook = "export PYTHONPATH=$(pwd):$PYTHONPATH";
     propagatedBuildInputs = [
       pythonPkgs.pyxdg
+      pythonPkgs.fuzzyfinder
     ];
     # checkPhase = ''
     #   PYLINTHOME="/tmp" pylint ledger_jira_sync

@@ -1,4 +1,4 @@
-from typing import NamedTuple, List, Optional, Any, Dict
+from typing import NamedTuple, List, Any, Dict
 from pathlib import Path
 import json
 from xdg.BaseDirectory import xdg_config_home
