@@ -18,6 +18,17 @@ class LedgerEntry(NamedTuple):
     user: str
 
 
+def get_granularity(filename: Path) -> timedelta:
+    with filename.open() as f:
+        granu_lines = [
+            line for line in f
+            if line.upper().startswith('; #PRAGMA GRANULARITY=')
+        ]
+        granularity = int(
+            granu_lines[0].split('=')[-1]) if len(granu_lines) > 0 else 15
+        return timedelta(minutes=granularity)
+
+
 def get_accounts(filename: Path) -> List[Account]:
     with filename.open() as f:
         account_lines = (line for line in f
