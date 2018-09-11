@@ -2,6 +2,8 @@
 
 ledgerclock=./result/bin/ledgerclock
 
+set -e 
+
 selected_file="$($ledgerclock --list-files | rofi -dmenu -matching fuzzy -p ledger -no-custom)"
 
 [[ -n "$selected_file" ]] || exit 1

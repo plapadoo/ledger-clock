@@ -2,7 +2,8 @@ import argparse
 from pathlib import Path
 from ledgerclock.ledger import get_accounts, get_payees
 from ledgerclock.config_file import read_config_file
-from ledgerclock.buffer_file import start_clock, stop_clock, recent_comments
+from ledgerclock.buffer_file import (start_clock, stop_clock, recent_comments,
+                                     commit_clocks)
 
 
 def main() -> None:
@@ -36,6 +37,11 @@ def main() -> None:
         '--start-clock',
         action='store_true',
         help='start the given clock',
+    )
+    parser.add_argument(
+        '--commit-clocks',
+        action='store_true',
+        help='commit all clocks',
     )
     parser.add_argument(
         '--ledger-file',
@@ -73,6 +79,8 @@ def main() -> None:
             args.comment,
             args.payee,
         )
+    if args.commit_clocks:
+        commit_clocks()
     if args.stop_clock:
         stop_clock()
     if args.list_accounts:
