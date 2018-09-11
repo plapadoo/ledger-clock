@@ -16,6 +16,6 @@ def read_config_file() -> ConfigFile:
     with config_path.open() as f:
         json_obj: Dict[str, Any] = json.load(f)
         return ConfigFile(
-            ledger_files=json_obj['ledger_files'],
+            ledger_files=[Path(p) for p in json_obj['ledger_files']],
             tag=json_obj['tag'],
         )

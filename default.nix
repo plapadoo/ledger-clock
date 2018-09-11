@@ -51,6 +51,7 @@ in
 
     buildInputs = [
       pkgs.python3
+      pkgs.rofi
       pythonPkgs.ipython
       pythonPkgs.pylint
       pythonPkgs.mypy

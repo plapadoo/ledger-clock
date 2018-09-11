@@ -30,6 +30,12 @@ def get_accounts(filename: Path) -> List[str]:
         return [line[8:].rstrip() for line in account_lines]
 
 
+def get_payees(filename: Path) -> List[str]:
+    with filename.open() as f:
+        lines = (line for line in f if line.upper().startswith('PAYEE '))
+        return [line[6:].rstrip() for line in lines]
+
+
 def fuzzy_search(accounts: List[str], needle: str) -> Iterable[str]:
     return (result for result in list(fuzzyfinder(needle, accounts)))
 
