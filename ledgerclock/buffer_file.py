@@ -60,6 +60,15 @@ def _write_buffer_file(f: BufferFile) -> None:
     _buffer_file().write_text(json.dumps(_file_to_json(f), indent=2))
 
 
+def get_active_clock() -> Optional[Tuple[BufferEntry, str]]:
+    e = _read_buffer_file().open_entry
+    if e is None:
+        return None
+    now = datetime.utcnow()
+    diff = str(int((now - e.start).total_seconds() / 60)) + "min"
+    return (e, diff)
+
+
 def start_clock(
         filename: Path,
         account: str,

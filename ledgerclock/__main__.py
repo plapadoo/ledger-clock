@@ -3,9 +3,10 @@ from pathlib import Path
 from ledgerclock.ledger import get_accounts, get_payees
 from ledgerclock.config_file import read_config_file
 from ledgerclock.buffer_file import (start_clock, stop_clock, recent_comments,
-                                     commit_clocks)
+                                     commit_clocks, get_active_clock)
 
 
+# pylint: disable=too-many-branches
 def main() -> None:
     parser = argparse.ArgumentParser(description='ledgerclock')
     parser.add_argument(
@@ -37,6 +38,11 @@ def main() -> None:
         '--start-clock',
         action='store_true',
         help='start the given clock',
+    )
+    parser.add_argument(
+        '--get-active-clock',
+        action='store_true',
+        help='get the name of the active clock (account)',
     )
     parser.add_argument(
         '--commit-clocks',
@@ -83,6 +89,10 @@ def main() -> None:
         commit_clocks()
     if args.stop_clock:
         stop_clock()
+    if args.get_active_clock:
+        ac = get_active_clock()
+        if ac is not None:
+            print(ac[0].account + " (" + ac[1] + ")")
     if args.list_accounts:
         for a in get_accounts(Path(args.ledger_file)):
             print(a)
@@ -95,7 +105,3 @@ def main() -> None:
     if args.list_files:
         for lf in read_config_file().ledger_files:
             print(lf)
-    # for (l, accounts) in ((lf, get_accounts(lf))
-    #                       for lf in read_config_file().ledger_files):
-    #     for a in accounts:
-    #         print(str(l) + "/" + a)
