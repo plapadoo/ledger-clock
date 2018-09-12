@@ -1,7 +1,12 @@
 #!/usr/bin/env bash
 
 ledgerclock_bin=ledgerclock
-notify_bin=ledgerclock
+notify_bin=notify-send
+
+function die() {
+    echo "$@"
+    exit 1
+}
 
 [ -x "$(command -v "$notify_bin")" ] || die "couldn't find notify-send"
 

@@ -29,12 +29,7 @@ let
 
   pythonPkgs = python.pkgs;
 
-  repoSrc = pkgs.fetchFromGitHub {
-      owner = "plapadoo";
-      repo = "ledger-clock";
-      rev = "8a5a4d1fa9d76e6d2495903374119088679dee9a";
-      sha256 = "0i595dhmq5dqyfwvscndq9q3788izj2r7w470ba8396ll5fcj1cn";
-    };
+  repoSrc = ./.;
 
   ledger-clock = pythonPkgs.buildPythonApplication rec {
     name = "ledger-clock";
@@ -69,15 +64,15 @@ in
     #phases = [ "patchPhase" "unpackPhase" "installPhase" ];
     patchPhase = ''
       substituteInPlace ledger-rofi-start-clock.sh --replace 'ledgerclock_bin=ledgerclock' ledgerclock_bin=${ledger-clock}/bin/ledgerclock
-      substituteInPlace ledger-rofi-start-clock.sh --replace 'rofi_bin=rofi' ledgerclock_bin=${rofi}/bin/rofi
-      substituteInPlace ledger-rofi-start-clock.sh --replace 'notify_bin=notify' notify_bin=${libnotify}/bin/notify-send
+      substituteInPlace ledger-rofi-start-clock.sh --replace 'rofi_bin=rofi' rofi_bin=${pkgs.rofi}/bin/rofi
+      substituteInPlace ledger-rofi-start-clock.sh --replace 'notify_bin=notify-send' notify_bin=${pkgs.libnotify}/bin/notify-send
 
       substituteInPlace ledger-rofi-stop-clock.sh --replace 'ledgerclock_bin=ledgerclock' ledgerclock_bin=${ledger-clock}/bin/ledgerclock
-      substituteInPlace ledger-rofi-stop-clock.sh --replace 'rofi_bin=rofi' ledgerclock_bin=${rofi}/bin/rofi
-      substituteInPlace ledger-rofi-stop-clock.sh --replace 'notify_bin=notify' notify_bin=${libnotify}/bin/notify-send
+      substituteInPlace ledger-rofi-stop-clock.sh --replace 'rofi_bin=rofi' rofi_bin=${pkgs.rofi}/bin/rofi
+      substituteInPlace ledger-rofi-stop-clock.sh --replace 'notify_bin=notify-send' notify_bin=${pkgs.libnotify}/bin/notify-send
 
       substituteInPlace commit-clocks.sh --replace 'ledgerclock_bin=ledgerclock' ledgerclock_bin=${ledger-clock}/bin/ledgerclock
-      substituteInPlace commit-clocks.sh --replace 'notify_bin=notify' notify_bin=${libnotify}/bin/notify-send
+      substituteInPlace commit-clocks.sh --replace 'notify_bin=notify-send' notify_bin=${pkgs.libnotify}/bin/notify-send
     '';
 
     installPhase = ''
