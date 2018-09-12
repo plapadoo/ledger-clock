@@ -1,15 +1,15 @@
 #!/usr/bin/env bash
 
-ledgerclock=./result/bin/ledgerclock
+ledgerclock_bin=ledgerclock
 
 [ -x "$(command -v notify-send)" ] || die "couldn't find notify-send"
 
-ac="$("$ledgerclock" --get-active-clock)"
+ac="$("$ledgerclock_bin" --get-active-clock)"
 
 if [ -z "$ac" ]; then
     notify-send "No active clock, stopping nothing"
 else 
-    "$ledgerclock" --stop-clock
+    "$ledgerclock_bin" --stop-clock
 
     notify-send "clock “$ac” stopped"
 fi 

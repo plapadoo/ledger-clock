@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ledgerclock=./result/bin/ledgerclock
+ledgerclock_bin=ledgerclock
 
 set -e 
 
@@ -12,23 +12,23 @@ function die() {
 [ -x "$(command -v rofi)" ] || die "couldn't find rofi"
 [ -x "$(command -v notify-send)" ] || die "couldn't find notify-send"
 
-selected_file="$($ledgerclock --list-files | rofi -dmenu -matching fuzzy -p ledger -no-custom)"
+selected_file="$($ledgerclock_bin --list-files | rofi -dmenu -matching fuzzy -p ledger -no-custom)"
 
 [[ -n "$selected_file" ]] || exit 1
 
-selected_account="$($ledgerclock --list-accounts --ledger-file "$selected_file" | rofi -dmenu -matching fuzzy -p account)"
+selected_account="$($ledgerclock_bin --list-accounts --ledger-file "$selected_file" | rofi -dmenu -matching fuzzy -p account)"
 
 [[ -n "$selected_account" ]] || exit 2
 
-selected_payee="$($ledgerclock --list-payees --ledger-file "$selected_file" | rofi -dmenu -matching fuzzy -p payee)"
+selected_payee="$($ledgerclock_bin --list-payees --ledger-file "$selected_file" | rofi -dmenu -matching fuzzy -p payee)"
 
 [[ -n "$selected_payee" ]] || exit 3
 
-comment="$($ledgerclock --list-recent-comments --ledger-file "$selected_file" --account "$selected_account" | rofi -dmenu -p comment)"
+comment="$($ledgerclock_bin --list-recent-comments --ledger-file "$selected_file" --account "$selected_account" | rofi -dmenu -p comment)"
 
-ac="$("$ledgerclock" --get-active-clock)"
+ac="$("$ledgerclock_bin" --get-active-clock)"
 
-$ledgerclock \
+$ledgerclock_bin \
     --ledger-file "$selected_file"\
     --account "$selected_account"\
     --comment "$comment"\
