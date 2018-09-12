@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 
-ledgerclock=./result/bin/ledgerclock
+ledgerclock_bin=ledgerclock
+notify_bin=ledgerclock
 
-[ -x "$(command -v notify-send)" ] || die "couldn't find notify-send"
+[ -x "$(command -v "$notify_bin")" ] || die "couldn't find notify-send"
 
 set -e
 
-$ledgerclock --commit-clocks
+"$ledgerclock_bin" --commit-clocks
 
-notify-send "Clocks commited"
+"$notify_bin" "Clocks commited"
